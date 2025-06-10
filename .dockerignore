@@ -1,0 +1,11 @@
+target/
+.git/
+.gitignore
+README.md
+*.md
+.DS_Store
+.idea/
+*.iml
+*.log
+temp/
+test_ocr.sh
