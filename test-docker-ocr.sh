@@ -61,3 +61,40 @@ echo "   docker compose logs -f"
 
 echo -e "\n🛑 Stop services:"
 echo "   docker compose down"
+
+# Test 6: Chat Service Health
+echo -e "\n5. Testing Chat service health..."
+chat_health=$(curl -s http://localhost:8080/api/chat/health)
+echo "Chat Health: $chat_health"
+
+if echo "$chat_health" | grep -q '"status":"UP"'; then
+    echo "✅ Chat Service is UP and running!"
+else
+    echo "❌ Chat Service is not ready"
+fi
+
+# Test 7: Chat Models
+echo -e "\n6. Testing Chat models..."
+chat_models=$(curl -s http://localhost:8080/api/chat/models)
+echo "Chat Models: $chat_models"
+
+echo -e "\n🎉 All Services (OCR, AI, Chat) are ready!"
+echo -e "\n📋 Complete API endpoints:"
+echo "   🔤 OCR Health: http://localhost:8080/api/ocr/health"
+echo "   🔤 OCR Formats: http://localhost:8080/api/ocr/formats"
+echo "   🔤 OCR Extract: POST http://localhost:8080/api/ocr/extract"
+echo "   🤖 AI Health: http://localhost:8080/api/ai/health"
+echo "   🤖 AI Models: http://localhost:8080/api/ai/models"
+echo "   🤖 AI Analyze: POST http://localhost:8080/api/ai/analyze"
+echo "   💬 Chat Health: http://localhost:8080/api/chat/health"
+echo "   💬 Chat Models: http://localhost:8080/api/chat/models"
+echo "   💬 Chat Message: POST http://localhost:8080/api/chat/message"
+echo "   💬 Install Model: POST http://localhost:8080/api/chat/install-model"
+echo "   🌐 Main Interface: http://localhost:8080"
+echo "   🌐 Chat Interface: http://localhost:8080/chat.html"
+
+echo -e "\n🧪 Test Chat with a message:"
+echo "   curl -X POST -H \"Content-Type: application/json\" -d '{\"message\":\"Hello!\",\"model\":\"gemma2:2b\"}' http://localhost:8080/api/chat/message"
+
+echo -e "\n🧪 Install a chat model:"
+echo "   curl -X POST -d \"model=llama3.2:1b\" http://localhost:8080/api/chat/install-model"

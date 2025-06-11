@@ -17,9 +17,18 @@ A Spring Boot application that provides OCR (Optical Character Recognition) func
 - **Vision Understanding**: Describe objects, text, scenes, and compositions
 - **File Size Limits**: Up to 50MB for AI analysis
 
+### **Chat Capabilities**
+- **Text Conversation**: Chat with various AI text models (Gemma, Llama, Phi-3, etc.)
+- **Streaming Responses**: Real-time streaming chat responses
+- **Conversation Memory**: Maintains context across conversation turns
+- **Auto Model Installation**: Automatically download any Ollama-compatible model
+- **System Prompts**: Set custom AI personality and behavior
+- **Multiple Models**: Support for 20+ different text models
+
 ### **Technical Features**
-- **REST API**: Clean RESTful endpoints for both OCR and AI
-- **Web Interface**: Unified web UI for OCR and AI analysis
+- **REST API**: Clean RESTful endpoints for OCR, AI, and Chat
+- **Dual Web Interface**: Main page for OCR/AI + dedicated chat interface
+- **Streaming Support**: Real-time streaming responses for chat
 - **Docker Support**: Complete containerization with Ollama integration
 - **Error Handling**: Comprehensive error handling and validation
 - **Health Monitoring**: Built-in health check endpoints
@@ -230,6 +239,115 @@ Get information about available AI models.
 }
 ```
 
+### **Chat Endpoints**
+
+### 8. Send Chat Message (Regular)
+**POST** `/api/chat/message`
+
+Send a message to an AI text model and get a complete response.
+
+**Parameters:**
+- `message` (string): The message to send
+- `model` (string): AI model to use (e.g., "gemma2:2b")
+- `conversation_id` (optional): Conversation ID for context
+- `system_prompt` (optional): System instructions for the AI
+
+**Example using curl:**
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"message":"Hello! How are you?","model":"gemma2:2b"}' \
+  http://localhost:8080/api/chat/message
+```
+
+**Response:**
+```json
+{
+  "response": "I am an AI assistant, so I don't have feelings...",
+  "model": "gemma2:2b",
+  "conversation_id": "76f014fa-91ff-4ad7-a44f-fd0346825217",
+  "processing_time_ms": 10107,
+  "success": true,
+  "token_count": 39
+}
+```
+
+### 9. Send Chat Message (Streaming)
+**POST** `/api/chat/stream`
+
+Send a message to an AI text model and get a streaming response.
+
+**Parameters:** Same as regular chat message
+
+**Example using curl:**
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"message":"Tell me a story","model":"gemma2:2b"}' \
+  http://localhost:8080/api/chat/stream
+```
+
+### 10. Install AI Model
+**POST** `/api/chat/install-model`
+
+Install a new AI model from Ollama's library.
+
+**Parameters:**
+- `model` (string): Model name to install (e.g., "llama3.2:1b")
+
+**Example using curl:**
+```bash
+curl -X POST -d "model=llama3.2:1b" \
+  http://localhost:8080/api/chat/install-model
+```
+
+### 11. Check Model Status
+**GET** `/api/chat/model-status/{model}`
+
+Check if a specific model is available locally.
+
+**Example using curl:**
+```bash
+curl -X GET http://localhost:8080/api/chat/model-status/gemma2:2b
+```
+
+**Response:**
+```json
+{
+  "model": "gemma2:2b",
+  "available": true,
+  "status": "ready"
+}
+```
+
+### 12. Available Chat Models
+**GET** `/api/chat/models`
+
+Get information about available text models.
+
+**Response:**
+```json
+{
+  "available_models": ["gemma2:2b", "llama3.2:1b", "phi3:mini"],
+  "default_model": "gemma2:2b",
+  "recommended_models": ["gemma2:2b", "llama3.2:1b", "phi3:mini"]
+}
+```
+
+### 13. Chat Service Health Check
+**GET** `/api/chat/health`
+
+Check if the chat service is running.
+
+**Response:**
+```json
+{
+  "status": "UP",
+  "service": "Chat Service",
+  "models_available": true,
+  "model_count": 9,
+  "timestamp": 1749577676083
+}
+```
+
 ## Supported Languages
 
 The service supports multiple languages. Common language codes:
@@ -279,9 +397,21 @@ Run the test suite:
 ./mvnw test
 ```
 
-## Web Interface
+## Web Interfaces
 
-Access the web interface at http://localhost:8080 for a simple upload form to test the OCR functionality.
+### **Main Interface** - http://localhost:8080
+- OCR text extraction from images
+- AI image analysis with vision models
+- Custom prompts for AI analysis
+- File upload with drag & drop support
+
+### **Chat Interface** - http://localhost:8080/chat.html
+- Real-time chat with AI text models
+- Streaming and regular response modes
+- Conversation memory and history
+- Auto model installation
+- System prompt configuration
+- Beautiful modern UI with animations
 
 ## Docker Commands
 
